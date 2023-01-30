@@ -5,7 +5,7 @@ function GoalItem (props) {
     <View style={styles.goalItem}>
     <Pressable
       android_ripple={{ color: '#210644' }}
-      onPress={props.onDeleteItem.bind(this, props.id)} {/* the first paremeter to be received */}
+      onPress={props.onDeleteItem.bind(this, props.id)} /* the first paremeter to be received */
       style={({ pressed }) => pressed && styles.pressedItem}
       >
         <Text style={styles.goalText}>{props.text}</Text>
