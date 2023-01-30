@@ -1,54 +1,44 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  Button,
-  TextInput, 
-  ScrollView,
-  FlatList
-} from 'react-native'; // import ALL core compontents
+import {StyleSheet, View, FlatList} from 'react-native'; // import ALL core compontents
+import GoalItem from './components/GoalItem';
+import GoalInput from './components/GoalInput';
 
 export default function App() {
-const [enteredGoalText, setEnteredGoalText] = useState('');
 const [courseGoals, setCourseGoals] = useState([]);
 
-function goalInputHandler(enteredText) {
-  setEnteredGoalText(enteredText);
-};
-
-function addGoalHander(){
-  setCourseGoals(currentCourseGoals => [
+function addGoalHandler(enteredGoalText) {
+  setCourseGoals((currentCourseGoals) => [
     ...currentCourseGoals, 
     {text: enteredGoalText, id: Math.random().toString()},
   ]);
-};
+}
+
+function deleteGoalHandler(id) {
+  setCourseGoals(currentCourseGoals => {
+    return currentCourseGoals.filter((goal) => goal.id !== id); //filter returns a new array minus all the items filtered out.
+  });
+}
 
   return (
     <View style={styles.appContainer}>
-      <View style={styles.inputContainer}>
-        <TextInput 
-          style={styles.textInput} 
-          placeholder="Your course goal!"
-          onChangeText={goalInputHandler}
-        />
-        <Button title="Add Goal" onPress={addGoalHander}/>
-      </View>
+      <GoalInput onAddGoal={addGoalHandler} />
       <View style={styles.goalsContainer}>
         <FlatList 
           data ={courseGoals} 
           renderItem={(itemData) => {
             return(
-              <View style={styles.goalItem}>
-                <Text style={styles.goalText}>{itemData.item.text}</Text>
-              </View>
-            );
+              <GoalItem 
+                text={itemData.item.text} 
+                onDeleteItem = {deleteGoalHandler} 
+              />
+            );        
           }} 
           keyExtractor={(item, index) =>{
             return item.id;
           }}
-          alwaysBounceVertical={false}/>
+          alwaysBounceVertical={false}
+        />
       </View>
     </View>
   );
@@ -60,34 +50,8 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingHorizontal: 16
   },
-  inputContainer:{
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-    borderBottomColor:'#cccccc',
-    borderBottomWidth: 1
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#cccccc',
-    width: '80%',
-    marginRight: 8,
-    padding: 8
-  },
   goalsContainer:{
     flex: 5
-  },
-  goalItem: {
-    margin: 8,
-    padding: 8,
-    borderRadius: 6,
-    backgroundColor: '#5e0acc',
-    color: 'white'
-  },
-  goalText:{
-    color: 'white'
   }
 });
 
